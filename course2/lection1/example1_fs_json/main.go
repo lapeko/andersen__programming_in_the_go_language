@@ -46,4 +46,12 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
+
+	var untypedUsers map[string]interface{}
+
+	if err = json.Unmarshal(reader, &untypedUsers); err != nil {
+		log.Fatalln(err)
+	}
+
+	log.Printf("%+v\n", untypedUsers)
 }
