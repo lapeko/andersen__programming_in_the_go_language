@@ -1,0 +1,31 @@
+{
+  "users": [
+    {
+      "Name": "John Doe",
+      "Type": "Admin",
+      "Age": 30,
+      "Social": {
+        "facebook": "john.doe",
+        "twitter": "johndoe"
+      }
+    },
+    {
+      "Name": "Jane Smith",
+      "Type": "User",
+      "Age": 25,
+      "Social": {
+        "facebook": "jane.smith",
+        "twitter": "janesmith"
+      }
+    },
+    {
+      "Name": "Alex Johnson",
+      "Type": "Moderator",
+      "Age": 28,
+      "Social": {
+        "facebook": "alex.johnson",
+        "twitter": "alexjohnson"
+      }
+    }
+  ]
+}
