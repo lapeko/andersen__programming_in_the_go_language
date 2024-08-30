@@ -2,7 +2,10 @@ package helpers
 
 import (
 	"encoding/json"
+	"errors"
+	"github.com/gorilla/mux"
 	"net/http"
+	"strconv"
 )
 
 type response struct {
@@ -28,4 +31,22 @@ func SendError(w http.ResponseWriter, errorMessage string, statusCode int) {
 		Body:         nil,
 		ErrorMessage: errorMessage,
 	})
+}
+
+func ParseParamId(r *http.Request) (uint, error) {
+	vars := mux.Vars(r)
+
+	idString, ok := vars["id"]
+
+	if !ok {
+		return 0, errors.New("ID does not exist")
+	}
+
+	idUint64, err := strconv.ParseUint(idString, 10, 0)
+
+	if err != nil {
+		return 0, errors.New("ID is not valid")
+	}
+
+	return uint(idUint64), nil
 }
