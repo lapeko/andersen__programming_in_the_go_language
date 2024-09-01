@@ -5,15 +5,8 @@
 - [Done] create enter point to the app ```cmd/<app_name>/main.go```
 - [Done] create basic main.go with fmt.Println
 - [Done] build the project ```go build -v ./cmd/<app_name>/```
-- init server core and config
-```
-internal/app/<app_name>/<app_name>.go
-internal/app/<app_name>/config.go
-```
-- create config file
-```
-configs/[<app_name>.toml | .env]
-```
+- [Done] init server core and config ```internal/app/<app_name>/<app_name>.go``` and ```internal/app/<app_name>/config.go```
+- create config file```configs/[<app_name>.toml | .env]```
 - add a config to the API constructor as a private field
 - read config in cmd/../app.go using https://github.com/BurntSushi/toml
 - use ```flag.StringVar(...``` to get path of the config

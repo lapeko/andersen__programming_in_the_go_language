@@ -1,7 +1,11 @@
 package main
 
-import "fmt"
+import (
+	"github.com/lapeko/andersen__programming_in_the_go_language/course2/lection3/internal/api"
+	"log"
+)
 
 func main() {
-	fmt.Println("App works")
+	a := api.New()
+	log.Fatal(a.Start())
 }
