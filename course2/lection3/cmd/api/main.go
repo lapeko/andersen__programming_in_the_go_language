@@ -1,18 +1,26 @@
 package main
 
 import (
-	"github.com/BurntSushi/toml"
+	"flag"
 	"github.com/lapeko/andersen__programming_in_the_go_language/course2/lection3/internal/api"
 	"log"
 )
 
+var (
+	configType string
+	configPath string
+)
+
+func init() {
+	flag.StringVar(&configType, "type", "toml", "Type of the config file [env|toml]. Default is \"toml\"")
+	flag.StringVar(&configPath, "path", "", "Path to the app config. Default \"./configs/api.toml\" for type toml and \"./configs/.env\" for type env")
+}
+
 func main() {
-	//a := api.New()
-	//log.Fatal(a.Start())
-	config := api.NewConfig()
-	var err interface{}
-	_, err = toml.DecodeFile("./configs/api.toml", config)
-	if err != nil {
-		log.Fatal(err)
+	flag.Parse()
+	config := api.NewConfig(configType, configPath)
+	a := api.New(config)
+	if err := a.Start(); err != nil {
+		log.Fatalln(err)
 	}
 }
