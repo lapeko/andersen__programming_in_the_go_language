@@ -12,8 +12,8 @@
 - [Done] use ```flag.StringVar(...``` to get path of the config
 - [Done] implement running config as ```api.exe -format [.env|<app_name>.toml] -path configs/[env|toml]```
 - [Done] add log_level into config
-- add logger to config and install https://github.com/sirupsen/logrus
-- create ```internal/app_name/helper.go``` and add configureLoggerField() error
+- [Done] add logger to config and install https://github.com/sirupsen/logrus
+- [Done] create ```internal/app_name/helper.go``` and add configureLoggerField() error
 - init mux.router to API obj
 - add func (a *API) configureRouterField
 
@@ -24,7 +24,7 @@
 - create storage.Config with constructor new Config{DatabaseUri: string}
 - add configureStorageField to API helper
 - add db: *sql.DB into Storage struct
-- inside Storage.open implement connection to postgre. Add ping to make the connection active
+- inside ```Storage.open``` implement connection to postgre. Add ping to make the connection active
 
 ## Migrations
 - install scoop on windows (analog for MAC homebrew but for windows)

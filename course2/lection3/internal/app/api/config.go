@@ -14,7 +14,10 @@ type Config struct {
 }
 
 func NewConfig(typeOfFile string, path string) *Config {
-	var config Config
+	config := Config{
+		BindAddr: 8080,
+		LogLevel: "Debug",
+	}
 	switch typeOfFile {
 	case "toml":
 		if path == "" {
