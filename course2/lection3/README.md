@@ -14,8 +14,8 @@
 - [Done] add log_level into config
 - [Done] add logger to config and install https://github.com/sirupsen/logrus
 - [Done] create ```internal/app_name/helper.go``` and add configureLoggerField() error
-- init mux.router to API obj
-- add func (a *API) configureRouterField
+- [Done] init mux.router to API obj
+- [Done] add func (a *API) configureRouterField
 
 ## Connect DB
 - install a lib for working with SQL. Default is ```database/sql```

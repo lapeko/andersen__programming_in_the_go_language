@@ -20,7 +20,5 @@ func main() {
 	flag.Parse()
 	config := api.NewConfig(configFormat, configPath)
 	a := api.New(config)
-	if err := a.Start(); err != nil {
-		log.Fatalln(err)
-	}
+	log.Fatalln(a.Start())
 }
