@@ -9,7 +9,8 @@ import (
 )
 
 type Config struct {
-	BindAddr int `toml:"BIND_ADDR" env:"BIND_ADDR"`
+	BindAddr int    `toml:"bind_addr" env:"BIND_ADDR"`
+	LogLevel string `toml:"log_level" env:"LOG_LEVEL"`
 }
 
 func NewConfig(typeOfFile string, path string) *Config {
