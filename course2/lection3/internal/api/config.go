@@ -1,7 +1,7 @@
 package api
 
 type Config struct {
-	Port string
+	BindAddr int `toml:"BIND_ADDR"`
 }
 
 func NewConfig() *Config {
