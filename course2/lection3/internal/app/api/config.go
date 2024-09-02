@@ -5,18 +5,21 @@ import (
 	"github.com/BurntSushi/toml"
 	"github.com/caarlos0/env"
 	"github.com/joho/godotenv"
+	"github.com/lapeko/andersen__programming_in_the_go_language/course2/lection3/storage"
 	"log"
 )
 
 type Config struct {
-	BindAddr int    `toml:"bind_addr" env:"BIND_ADDR"`
-	LogLevel string `toml:"log_level" env:"LOG_LEVEL"`
+	BindAddr      int             `toml:"web_server.bind_addr" env:"BIND_ADDR"`
+	LogLevel      string          `toml:"web_server.log_level" env:"LOG_LEVEL"`
+	StorageConfig *storage.Config `toml:"storage"`
 }
 
 func NewConfig(typeOfFile string, path string) *Config {
 	config := Config{
-		BindAddr: 8080,
-		LogLevel: "Debug",
+		BindAddr:      8080,
+		LogLevel:      "Debug",
+		StorageConfig: storage.NewConfig(),
 	}
 	switch typeOfFile {
 	case "toml":

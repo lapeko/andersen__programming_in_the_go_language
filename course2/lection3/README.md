@@ -18,13 +18,13 @@
 - [Done] add func (a *API) configureRouterField
 
 ## Connect DB
-- install a lib for working with SQL. Default is ```database/sql```
-- init ```storage/storage.go``` it should have Open, Close, New. ```Store struct {config: *Config}```
-- add storage.Storage into API object
-- create storage.Config with constructor new Config{DatabaseUri: string}
-- add configureStorageField to API helper
-- add db: *sql.DB into Storage struct
-- inside ```Storage.open``` implement connection to postgre. Add ping to make the connection active
+- [Done] install a lib for working with SQL. Default is ```database/sql```
+- [Done] init ```storage/storage.go``` it should have Open, Close, New. ```Store struct {config: *Config}```
+- [Done] add storage.Storage into API object
+- [Done] create storage.Config with constructor new Config{DatabaseUri: string}
+- [Done] add configureStorageField to API helper
+- [Done] add db: *sql.DB into Storage struct
+- [Done] inside ```Storage.open``` implement connection to postgre. Add ping to make the connection active
 
 ## Migrations
 - install scoop on windows (analog for MAC homebrew but for windows)
