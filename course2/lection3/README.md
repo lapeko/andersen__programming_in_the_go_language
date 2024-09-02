@@ -27,12 +27,12 @@
 - [Done] inside ```Storage.open``` implement connection to postgre. Add ping to make the connection active
 
 ## Migrations
-- install scoop on windows (analog for MAC homebrew but for windows)
-- install golang migrate
-- ```scoop install migrate```
-- ```migrate create -ext sql -dir migrations UsersCreationMigration``` should create two migrations
-- add a migration up/down create/delete table users with id, name, email (unique), age, password_hash
-- Run the up migration
+- [Skipped] install scoop on windows (analog for MAC homebrew but for windows)
+- [Done] install golang migrate
+- [Skipped] ```scoop install migrate```
+- [Done] ```migrate create -ext sql -dir migrations UsersCreationMigration``` should create two migrations
+- [Done] add a migration up/down create/delete table users with id, name, email (unique), age, password_hash
+- [Done] Run the up migration
 
 ## Homework
 - read golang-standards/project-layout
