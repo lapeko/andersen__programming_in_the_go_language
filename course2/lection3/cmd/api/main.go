@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"github.com/lapeko/andersen__programming_in_the_go_language/course2/lection3/internal/app/api"
+	"github.com/lapeko/andersen__programming_in_the_go_language/course2/lection3/pkg/logger"
 	"log"
 )
 
@@ -19,6 +20,7 @@ func init() {
 func main() {
 	flag.Parse()
 	config := api.NewConfig(configFormat, configPath)
+	logger.InitLogger(config.LogLevel)
 	a := api.New(config)
 	log.Fatalln(a.Start())
 }
