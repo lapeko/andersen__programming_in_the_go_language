@@ -24,7 +24,6 @@ func InitLogger(logLevel string) {
 }
 
 func Get() *logrus.Logger {
-	log.Println("Getting", logger)
 	if logger == nil {
 		log.Fatalln("Logger is not initialized")
 	}
