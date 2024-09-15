@@ -3,8 +3,6 @@ package app
 import (
 	"bufio"
 	"fmt"
-	"log"
-	"regexp"
 	"sort"
 	"strings"
 )
@@ -12,6 +10,11 @@ import (
 type App struct {
 	reader  *bufio.Reader
 	taskMap map[string][]string
+}
+
+type payload struct {
+	date string
+	task string
 }
 
 const inputErrorString = "Incorrect command or arguments. Please try again"
@@ -47,18 +50,74 @@ func (a *App) StartApp(reader *bufio.Reader) {
 				continue
 			}
 
-			switch inputs[0] {
+			command, date := inputs[0], inputs[1]
+			fullDate, err := getFullDateString(date)
+
+			if err != nil {
+				fmt.Println(inputErrorString)
+				continue
+			}
+
+			p := &payload{date: fullDate}
+			if len(inputs) > 2 {
+				p.task = strings.Join(inputs[2:], " ")
+			}
+
+			switch command {
 			case "Add":
-				a.addTask(inputs)
+				a.addTask(p)
 			case "Del":
-				break
+				a.delete(p)
 			case "Find":
-				break
+				a.findByDate(p)
 			default:
+				fmt.Println(inputs)
 				fmt.Println(inputErrorString)
 				continue
 			}
 		}
+	}
+}
+
+func (a *App) addTask(p *payload) {
+	if p.task == "" {
+		fmt.Println(inputErrorString)
+		return
+	}
+
+	tasks, ok := a.taskMap[p.date]
+
+	if !ok {
+		a.taskMap[p.date] = []string{p.task}
+		return
+	}
+
+	tasks = append(tasks, p.task)
+	sort.Strings(tasks)
+	a.taskMap[p.date] = tasks
+}
+
+func (a *App) delete(p *payload) {
+	if p.task == "" {
+		deletedNum := deleteAllTasksForDate(a.taskMap, p)
+		fmt.Printf("Deleted %d events\n", deletedNum)
+		return
+	}
+	deleted := deleteOneTasksForDate(a.taskMap, p)
+	if deleted {
+		fmt.Println("Deleted successfully")
+		return
+	}
+	fmt.Println("Event not found")
+}
+
+func (a *App) findByDate(p *payload) {
+	tasks, ok := a.taskMap[p.date]
+	if !ok {
+		return
+	}
+	for _, task := range tasks {
+		fmt.Println(task)
 	}
 }
 
@@ -74,41 +133,3 @@ func (a *App) printTasks() {
 		}
 	}
 }
-
-func (a *App) addTask(inputs []string) {
-	if len(inputs) < 3 {
-		fmt.Println(inputErrorString)
-		return
-	}
-
-	r := regexp.MustCompile(`^\d{1,4}-\d{1,2}-\d{1,2}$`)
-	date, task := inputs[1], inputs[2]
-
-	if !r.MatchString(date) {
-		log.Println("Provide a date in correct format")
-		return
-	}
-
-	dateParts := strings.Split(date, "-")
-
-	dateInCorrectFormat := fmt.Sprintf(
-		"%s-%s-%s",
-		fillWithZeros(dateParts[0], 4),
-		fillWithZeros(dateParts[1], 2),
-		fillWithZeros(dateParts[2], 2),
-	)
-
-	val, ok := a.taskMap[dateInCorrectFormat]
-
-	if !ok {
-		a.taskMap[dateInCorrectFormat] = []string{task}
-		return
-	}
-
-	val = append(val, task)
-	sort.Strings(val)
-}
-
-//func delete(taskMap map[string][]string, inputs []string) {
-//
-//}
