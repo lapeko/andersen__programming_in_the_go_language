@@ -24,7 +24,7 @@ func (a *API) configureRouting() {
 	//a.router.HandleFunc(apiPrefix+"/users/{email}", a.GetUserByEmail).Methods("GET")
 
 	a.router.HandleFunc(apiPrefix+"/articles", a.GetAllArticles).Methods("GET")
-	//a.router.HandleFunc(apiPrefix+"/articles/{id}", a.GetArticle).Methods("GET")
+	a.router.HandleFunc(apiPrefix+"/articles/{id}", a.GetArticle).Methods("GET")
 	//a.router.HandleFunc(apiPrefix+"/articles/{id}", a.DeleteArticle).Methods("DELETE")
 	//a.router.HandleFunc(apiPrefix+"/articles", a.CreateArticle).Methods("POST")
 	//a.router.HandleFunc(apiPrefix+"/articles/{id}", a.UpdateArticle).Methods("PATCH")

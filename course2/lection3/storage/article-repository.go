@@ -2,6 +2,7 @@ package storage
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"github.com/lapeko/andersen__programming_in_the_go_language/course2/lection3/internal/app/models"
 	"github.com/lapeko/andersen__programming_in_the_go_language/course2/lection3/pkg/logger"
@@ -46,4 +47,21 @@ func (a *ArticlesRepository) GetAll() ([]*models.Article, error) {
 	}
 
 	return articles, nil
+}
+
+func (a *ArticlesRepository) GetArticleById(id int) (*models.Article, error) {
+	query := fmt.Sprintf("SELECT * from %s WHERE id = $1", articlesTableName)
+
+	article := &models.Article{}
+
+	err := a.db.QueryRow(query, id).Scan(&article.Id, &article.Title, &article.AuthorId, &article.Content)
+
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, nil
+		}
+		return nil, err
+	}
+
+	return article, nil
 }
