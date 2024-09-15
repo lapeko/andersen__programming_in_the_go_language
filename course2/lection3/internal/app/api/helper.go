@@ -19,8 +19,15 @@ func (a *API) configureRouting() {
 	a.router.HandleFunc(apiPrefix+"/ping", func(writer http.ResponseWriter, _ *http.Request) {
 		_, _ = writer.Write([]byte("Pong"))
 	})
-	a.router.HandleFunc(apiPrefix+"/users", a.GetAllUsers)
-	a.router.HandleFunc(apiPrefix+"/articles", a.GetAllArticles)
+	a.router.HandleFunc(apiPrefix+"/users", a.GetAllUsers).Methods("GET")
+	a.router.HandleFunc(apiPrefix+"/users/register", a.CreateUser).Methods("POST")
+	//a.router.HandleFunc(apiPrefix+"/users/{email}", a.GetUserByEmail).Methods("GET")
+
+	a.router.HandleFunc(apiPrefix+"/articles", a.GetAllArticles).Methods("GET")
+	//a.router.HandleFunc(apiPrefix+"/articles/{id}", a.GetArticle).Methods("GET")
+	//a.router.HandleFunc(apiPrefix+"/articles/{id}", a.DeleteArticle).Methods("DELETE")
+	//a.router.HandleFunc(apiPrefix+"/articles", a.CreateArticle).Methods("POST")
+	//a.router.HandleFunc(apiPrefix+"/articles/{id}", a.UpdateArticle).Methods("PATCH")
 }
 
 func (a *API) configureStorage() error {
