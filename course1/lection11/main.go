@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"regexp"
 	"sort"
 	"strings"
 )
@@ -55,38 +56,31 @@ func startApp(reader *bufio.Reader) {
 		}
 
 		userInput = strings.TrimSpace(line)
-		strings.TrimSpace(userInput)
 
-		if err != nil {
-			log.Println(err, "Please try again")
-			continue
-		}
-
-		if userInput == "Quit" {
+		switch userInput {
+		case "Quit":
 			return
-		}
-
-		if userInput == "Print" {
+		case "Print":
 			printTasks(taskMap)
-		}
-
-		inputs := strings.Split(userInput, " ")
-
-		if len(inputs) < 2 {
-			fmt.Println(inputErrorString)
-			continue
-		}
-
-		switch inputs[0] {
-		case "Add":
-			addTask(taskMap, inputs)
-		case "Del":
-			break
-		case "Find":
-			break
 		default:
-			fmt.Println(inputErrorString)
-			continue
+			inputs := strings.Split(userInput, " ")
+
+			if len(inputs) < 2 {
+				fmt.Println(inputErrorString)
+				continue
+			}
+
+			switch inputs[0] {
+			case "Add":
+				addTask(taskMap, inputs)
+			case "Del":
+				break
+			case "Find":
+				break
+			default:
+				fmt.Println(inputErrorString)
+				continue
+			}
 		}
 	}
 }
@@ -98,7 +92,7 @@ func printTasks(taskMap map[string][]string) {
 	}
 	sort.Strings(keys)
 	for _, date := range keys {
-		for _, task := range taskMap {
+		for _, task := range taskMap[date] {
 			fmt.Println(date, task)
 		}
 	}
@@ -110,13 +104,35 @@ func addTask(taskMap map[string][]string, inputs []string) {
 		return
 	}
 
-	val, ok := taskMap[inputs[1]]
+	r := regexp.MustCompile(`^\d{1,4}-\d{1,2}-\d{1,2}$`)
+	date, task := inputs[1], inputs[2]
 
-	if !ok {
-		taskMap[inputs[1]] = []string{inputs[2]}
+	if !r.MatchString(date) {
+		log.Println("Provide a date in correct format")
 		return
 	}
 
-	val = append(val, inputs[2])
+	dateParts := strings.Split(date, "-")
+
+	dateInCorrectFormat := fmt.Sprintf(
+		"%s-%s-%s",
+		fillWithZeros(dateParts[0], 4),
+		fillWithZeros(dateParts[1], 2),
+		fillWithZeros(dateParts[2], 2),
+	)
+
+	val, ok := taskMap[dateInCorrectFormat]
+
+	if !ok {
+		taskMap[dateInCorrectFormat] = []string{task}
+		return
+	}
+
+	val = append(val, task)
 	sort.Strings(val)
+}
+
+func fillWithZeros(srcString string, totalSize int) string {
+	paddingSize := totalSize - len(srcString)
+	return fmt.Sprintf("%s%s", strings.Repeat("0", paddingSize), srcString)
 }
