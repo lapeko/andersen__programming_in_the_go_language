@@ -16,6 +16,10 @@ func main() {
 	vitali := "Виталя"
 	fmt.Printf("Length of word %s is %d bytes and has %d characters\n", vitali, len(vitali), utf8.RuneCountInString(vitali))
 
+	for idx, letter := range vitali {
+		fmt.Printf("Index: %d. Letter: %c\n", idx, letter)
+	}
+
 	var l rune = 'ł'
 	fmt.Println(l)
 	var l2 rune = 322
