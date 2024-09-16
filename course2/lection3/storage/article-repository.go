@@ -77,7 +77,7 @@ func (a *ArticlesRepository) Create(article *models.Article) (*models.Article, e
 	return article, nil
 }
 
-func (a *ArticlesRepository) Delete(id int) (bool, error) {
+func (a *ArticlesRepository) Delete(id uint64) (bool, error) {
 	query := fmt.Sprintf("DELETE FROM %s WHERE id = $1", articlesTableName)
 	res, err := a.db.Exec(query, id)
 
@@ -99,6 +99,7 @@ func (a *ArticlesRepository) Delete(id int) (bool, error) {
 
 func (a *ArticlesRepository) Update(article *models.Article) (*models.Article, error) {
 	query := fmt.Sprintf("UPDATE %s SET title=$1, author_id=$2, content=$3 WHERE id=$4", articlesTableName)
+	fmt.Println(article.Id)
 	r, err := a.db.Exec(query, article.Title, article.AuthorId, article.Content, article.Id)
 
 	if err != nil {

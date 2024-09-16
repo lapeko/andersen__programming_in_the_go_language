@@ -12,6 +12,7 @@ import (
 
 func (a *API) GetAllUsers(w http.ResponseWriter, r *http.Request) {
 	log := logger.Get()
+	log.Debug("GetAllUsers")
 
 	users, err := a.storage.Users().GetAll()
 
@@ -28,6 +29,7 @@ func (a *API) GetAllUsers(w http.ResponseWriter, r *http.Request) {
 
 func (a *API) CreateUser(w http.ResponseWriter, r *http.Request) {
 	log := logger.Get()
+	log.Debug("CreateUser")
 
 	user := &models.User{}
 	err := json.NewDecoder(r.Body).Decode(user)
@@ -59,6 +61,7 @@ func (a *API) CreateUser(w http.ResponseWriter, r *http.Request) {
 
 func (a *API) GetAllArticles(w http.ResponseWriter, r *http.Request) {
 	log := logger.Get()
+	log.Debug("GetAllArticles")
 
 	articles, err := a.storage.Articles().GetAll()
 
@@ -75,12 +78,13 @@ func (a *API) GetAllArticles(w http.ResponseWriter, r *http.Request) {
 
 func (a *API) GetArticle(w http.ResponseWriter, r *http.Request) {
 	log := logger.Get()
+	log.Debug("GetArticle")
 
 	vars := mux.Vars(r)
 	id, ok := vars["id"]
 
 	if !ok {
-		log.Error("No id in params")
+		log.Error("no id in params")
 		sendError(w, errors.New("no ID found"), http.StatusInternalServerError)
 		return
 	}
@@ -93,7 +97,7 @@ func (a *API) GetArticle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	article, err := a.storage.Articles().GetArticleById(int(digitId))
+	article, err := a.storage.Articles().GetById(int(digitId))
 
 	if err != nil {
 		log.Error(err)
@@ -102,7 +106,7 @@ func (a *API) GetArticle(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if article == nil {
-		log.Debugln("user not found")
+		log.Debugln("article not found")
 		sendError(w, errors.New("article not found"), http.StatusNotFound)
 		return
 	}
@@ -110,4 +114,111 @@ func (a *API) GetArticle(w http.ResponseWriter, r *http.Request) {
 	sendSuccess(w, article)
 }
 
-// Create, Delete, Update
+func (a *API) CreateArticle(w http.ResponseWriter, r *http.Request) {
+	log := logger.Get()
+	log.Debug("CreateArticle")
+
+	article := &models.Article{}
+	err := json.NewDecoder(r.Body).Decode(article)
+
+	if err != nil {
+		log.Error("request body is invalid")
+		sendError(w, err, http.StatusBadRequest)
+		return
+	}
+
+	article, err = a.storage.Articles().Create(article)
+
+	if err != nil {
+		log.Error("article creation error: ", err)
+		sendError(w, err, http.StatusInternalServerError)
+		return
+	}
+
+	sendSuccessWithCode(w, article, http.StatusCreated)
+}
+
+func (a *API) DeleteArticle(w http.ResponseWriter, r *http.Request) {
+	log := logger.Get()
+	log.Debug("DeleteArticle")
+
+	vars := mux.Vars(r)
+	id, ok := vars["id"]
+
+	if !ok {
+		log.Error("no id in params")
+		sendError(w, errors.New("no ID found"), http.StatusInternalServerError)
+		return
+	}
+
+	digitId, err := strconv.ParseUint(id, 10, 64)
+
+	if err != nil {
+		log.Error("incorrect ID format")
+		sendError(w, errors.New("incorrect ID format"), http.StatusBadRequest)
+		return
+	}
+
+	ok, err = a.storage.Articles().Delete(digitId)
+
+	if err != nil {
+		log.Error(err)
+		sendError(w, err, http.StatusInternalServerError)
+		return
+	}
+
+	if !ok {
+		log.Debugln("article does not exist")
+		sendError(w, errors.New("article not found"), http.StatusNotFound)
+		return
+	}
+
+	sendSuccessWithCode(w, digitId, http.StatusOK)
+}
+
+func (a *API) UpdateArticle(w http.ResponseWriter, r *http.Request) {
+	log := logger.Get()
+	log.Debug("UpdateArticle")
+
+	vars := mux.Vars(r)
+	id, ok := vars["id"]
+
+	if !ok {
+		log.Error("no id in params")
+		sendError(w, errors.New("no ID found"), http.StatusInternalServerError)
+		return
+	}
+
+	digitId, err := strconv.ParseInt(id, 10, 32)
+
+	if err != nil {
+		log.Error("incorrect ID format")
+		sendError(w, errors.New("incorrect ID format"), http.StatusBadRequest)
+		return
+	}
+
+	article := &models.Article{Id: uint(digitId)}
+	err = json.NewDecoder(r.Body).Decode(article)
+
+	if err != nil {
+		log.Error("request body is invalid")
+		sendError(w, err, http.StatusBadRequest)
+		return
+	}
+
+	article, err = a.storage.Articles().Update(article)
+
+	if err != nil {
+		log.Error("update article db error: ", err)
+		sendError(w, err, http.StatusInternalServerError)
+		return
+	}
+
+	if article == nil {
+		log.Error("article not found")
+		sendError(w, errors.New("not found"), http.StatusNotFound)
+		return
+	}
+
+	sendSuccessWithCode(w, article, http.StatusOK)
+}
