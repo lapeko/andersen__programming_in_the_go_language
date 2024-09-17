@@ -3,11 +3,15 @@ package api
 import (
 	"encoding/json"
 	"errors"
-	"github.com/gorilla/mux"
-	"github.com/lapeko/andersen__programming_in_the_go_language/course2/lection3/internal/app/models"
-	"github.com/lapeko/andersen__programming_in_the_go_language/course2/lection3/pkg/logger"
 	"net/http"
 	"strconv"
+	"time"
+
+	"github.com/form3tech-oss/jwt-go"
+	"github.com/gorilla/mux"
+	"github.com/lapeko/andersen__programming_in_the_go_language/course2/lection3/internal/app/middleware"
+	"github.com/lapeko/andersen__programming_in_the_go_language/course2/lection3/internal/app/models"
+	"github.com/lapeko/andersen__programming_in_the_go_language/course2/lection3/pkg/logger"
 )
 
 func (a *API) GetAllUsers(w http.ResponseWriter, r *http.Request) {
@@ -57,6 +61,51 @@ func (a *API) CreateUser(w http.ResponseWriter, r *http.Request) {
 	log.Debugln("received user:", user)
 
 	sendSuccessWithCode(w, user, http.StatusCreated)
+}
+
+func (a *API) AuthUser(w http.ResponseWriter, r *http.Request) {
+	log := logger.Get()
+	log.Debug("AuthUser")
+
+	var user models.User
+	err := json.NewDecoder(r.Body).Decode(&user)
+
+	if err != nil {
+		sendError(w, errors.New("invalid JSON payload"), http.StatusBadRequest)
+		return
+	}
+
+	dbUser, err := a.storage.Users().GetByEmail(user.Email)
+
+	if err != nil {
+		sendError(w, err, http.StatusInternalServerError)
+		return
+	}
+
+	if dbUser == nil {
+		sendError(w, errors.New("user not found"), http.StatusNotFound)
+		return
+	}
+
+	if user.Password != dbUser.Password {
+		sendError(w, errors.New("invalid password"), http.StatusBadRequest)
+		return
+	}
+
+	claims := jwt.MapClaims{
+		"isAdmin": true,
+		"exp":     time.Now().Add(2 * time.Hour).Unix(),
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	signedToken, err := token.SignedString(middleware.SecretToken)
+
+	if err != nil {
+		sendError(w, err, http.StatusInternalServerError)
+		return
+	}
+
+	sendSuccess(w, signedToken)
 }
 
 func (a *API) GetAllArticles(w http.ResponseWriter, r *http.Request) {
