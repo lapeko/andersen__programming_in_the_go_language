@@ -1,0 +1,5 @@
+[web_server]
+bind_addr = 8081
+
+[storage]
+database_uri = "user=admin password=1234 dbname=articles port=5433"
