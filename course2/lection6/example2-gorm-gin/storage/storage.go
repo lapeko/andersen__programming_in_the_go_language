@@ -2,14 +2,16 @@ package storage
 
 import (
 	"github.com/lapeko/andersen__programming_in_the_go_language/course2/lection6/example2-gorm-gin/internal/models"
+	"github.com/lapeko/andersen__programming_in_the_go_language/course2/lection6/example2-gorm-gin/repository"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"log"
 )
 
 type Storage struct {
-	dsn string
-	db  *gorm.DB
+	dsn  string
+	db   *gorm.DB
+	Repo *repository.Repo
 }
 
 func New(dsn string) *Storage {
@@ -23,6 +25,12 @@ func (s *Storage) Init() (err error) {
 	}
 
 	s.db, err = gorm.Open(postgres.Open(s.dsn), &gorm.Config{})
+
+	if err != nil {
+		return err
+	}
+
+	s.Repo = repository.New(s.db)
 
 	return
 }

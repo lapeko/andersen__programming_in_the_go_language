@@ -5,5 +5,6 @@ import "github.com/lapeko/andersen__programming_in_the_go_language/course2/lecti
 func main() {
 	a := api.New()
 	a.Init()
-	defer a.Storage.Close()
+	a.Start()
+	defer a.Close()
 }

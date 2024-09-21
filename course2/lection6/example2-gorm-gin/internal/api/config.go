@@ -5,15 +5,19 @@ import (
 )
 
 type Config struct {
-	bindAddr string `toml:"web_server.bind_addr"`
-	dbUri    string `toml:"storage.database_uri"`
+	WebServer struct {
+		BindAddr int `toml:"bind_addr"`
+	} `toml:"web_server"`
+	Storage struct {
+		DbUri string `toml:"db_uri"`
+	} `toml:"storage"`
 }
 
 func NewConfig() *Config {
 	return &Config{}
 }
 
-func (c *Config) Init() error {
-	_, err := toml.DecodeFile("./config/config.toml", c)
-	return err
+func (c *Config) Init() (err error) {
+	_, err = toml.DecodeFile("./config/config.toml", c)
+	return
 }
