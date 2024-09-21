@@ -19,6 +19,8 @@ func sendSuccessWithStatus(c *gin.Context, statusCode int, body interface{}) {
 	c.JSON(statusCode, Response{Ok: true, StatusCode: statusCode, Body: body})
 }
 
-func sendError(c *gin.Context, statusCode int) {
-	c.JSON(statusCode, Response{Ok: false, StatusCode: statusCode, Body: nil})
+func sendError(c *gin.Context, statusCode int, errorMessage string) {
+	c.JSON(statusCode, Response{Ok: false, StatusCode: statusCode, Body: struct {
+		ErrorMessage string
+	}{ErrorMessage: errorMessage}})
 }

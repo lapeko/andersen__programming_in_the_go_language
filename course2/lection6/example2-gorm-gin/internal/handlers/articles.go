@@ -26,29 +26,56 @@ func GetHandlers(r *repository.ArticlesRepo) *Handlers {
 }
 
 func (a *articlesHandler) Create(c *gin.Context) {
-	article := &models.Article{}
-	if err := c.ShouldBind(article); err != nil {
-		sendError(c, http.StatusBadRequest)
+	var article models.Article
+	if err := c.ShouldBind(&article); err != nil {
+		sendError(c, http.StatusBadRequest, err.Error())
 	}
-	if err := a.repo.Create(article); err != nil {
-		sendError(c, http.StatusInternalServerError)
+	if err := a.repo.Create(&article); err != nil {
+		sendError(c, http.StatusInternalServerError, err.Error())
+		return
 	}
-	sendSuccessWithStatus(c, http.StatusCreated, article)
+	sendSuccessWithStatus(c, http.StatusCreated, &article)
 }
 
 func (a *articlesHandler) GetAll(c *gin.Context) {
 	var articles []models.Article
 	if err := a.repo.GetAll(&articles); err != nil {
-		sendError(c, http.StatusInternalServerError)
+		sendError(c, http.StatusInternalServerError, err.Error())
+		return
 	}
 	sendSuccess(c, &articles)
 }
 
 func (a *articlesHandler) GetById(c *gin.Context) {
+
+	var article models.Article
+	if err := a.repo.GetById(&article, c.Param("id")); err != nil {
+		sendError(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	sendSuccess(c, &article)
 }
 
 func (a *articlesHandler) Update(c *gin.Context) {
+	var article models.Article
+	if err := c.ShouldBind(&article); err != nil {
+		sendError(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	if err := a.repo.Update(&article); err != nil {
+		sendError(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	sendSuccess(c, &article)
 }
 
 func (a *articlesHandler) Delete(c *gin.Context) {
+	if err := a.repo.DeleteById(c.Param("id")); err != nil {
+		sendError(c, http.StatusBadRequest, err.Error())
+	}
+
+	sendSuccess(c, nil)
 }
